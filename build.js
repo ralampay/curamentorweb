@@ -17,7 +17,7 @@ const watchPlugin = {
     });
 
     build.onEnd((result) => {
-      if(result.errors.length > 0) {
+      if(result.errors && result.errors.length > 0) {
         console.log(`Build finished, with errors ${new Date(Date.now()).toLocaleString()}`);
         console.log(errors);
       } else {

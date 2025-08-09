@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import Login from "./Login";
 import { isLoggedIn } from "./services/AuthService";
-import TopNavigation from "./TopNavigation";
 import Sidebar from "./Sidebar";
+import {
+  Routes,
+  Route
+} from "react-router-dom";
+
+import Dashboard from "./Dashboard";
 
 export default App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,9 +25,14 @@ export default App = () => {
           isOpen={isSidebarOpen}
           setIsOpen={setIsSidebarOpen}
         />
-        <div className={`app-content ${isSidebarOpen ? 'open' : ''}`}>
+        <div className={`app-main-section ${isSidebarOpen ? 'open' : ''}`}>
           <main className="container-fluid p-3">
-            Content
+            <Routes>
+              <Route
+                path="/"
+                element={<Dashboard/>}
+              />
+            </Routes>
           </main>
         </div>
       </div>
