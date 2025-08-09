@@ -19,6 +19,23 @@ export default Dashboard = () => {
         </div>
       </div>
       <div className="card-body">
+        <div className="table-responsive" style={{ maxHeight: "1200px", overflowY: "auto" }}>
+          <table className="table table-sm table-bordered table-hover">
+            <thead className="table-dark sticky-top">
+              <tr>
+                <th className="text-center"/>
+                <th className="fw-bold">
+                  Col 1
+                </th>
+                <th className="fw-bold">
+                  Col 2
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
