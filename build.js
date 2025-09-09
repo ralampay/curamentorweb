@@ -3,6 +3,7 @@ import {sassPlugin} from 'esbuild-sass-plugin';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
 import esbuildEnvfilePlugin from 'esbuild-envfile-plugin';
+import "dotenv/config";
 
 const port = 8000;
 const args = process.argv.slice(2);
