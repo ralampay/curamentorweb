@@ -37,3 +37,13 @@ npm run mock-server
 ```bash
 npm run start
 ```
+
+## Upgrading all packages
+
+Run first `npm-check-updates`:
+
+```bash
+npx npm-check-updates -u
+```
+
+Confrim updates then run `npm install`.
