@@ -1,8 +1,7 @@
 @use "../../node_modules/bootstrap/scss/bootstrap.scss" as bootstrap;
-@use "./bootstrap-overrides.scss" as bootstrapOverrides";
+@use "./bootstrap-overrides.scss" as bootstrapOverrides;
 @use "./variables.scss" as variables;
 @use "./Login.scss" as Login;
-@use "./TopNavigation.scss" as TopNavigation;
 @use "./Sidebar.scss" as Sidebar;
 @use "./Loader.scss" as Loader; 
 
