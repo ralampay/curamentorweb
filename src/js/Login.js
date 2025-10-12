@@ -6,9 +6,6 @@ import {
   login,
   createSession
 } from "./services/AuthService";
-import {
-  API_BASE_URL
-} from "env";
 
 export default Login = () => {
   const [username, setUsername] = useState("");

@@ -2,7 +2,6 @@ import esbuild from 'esbuild';
 import {sassPlugin} from 'esbuild-sass-plugin';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
-import esbuildEnvfilePlugin from 'esbuild-envfile-plugin';
 import "dotenv/config";
 
 const port = 8000;
@@ -47,7 +46,6 @@ let commonSettings = {
     ".svg": "dataurl",
   },
   plugins: [
-    esbuildEnvfilePlugin,
     sassPlugin({
       async transform(source) {
         const { css } = await postcss([autoprefixer]).process(
@@ -58,6 +56,11 @@ let commonSettings = {
     }),
     watchPlugin
   ],
+  define: {
+    'API_BASE_URL': JSON.stringify(process.env.API_BASE_URL),
+    'TOKEN_BEARER': JSON.stringify(process.env.TOKEN_BEARER),
+    'CURRENT_USER': JSON.stringify(process.env.CURRENT_USER)
+  }
 }
 
 let debugSettings = {}

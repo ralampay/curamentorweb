@@ -1,8 +1,4 @@
 import axios from 'axios';
-import { 
-  API_BASE_URL,
-  TOKEN_BEARER
-} from 'env';
 import { jwtDecode } from 'jwt-decode';
 import { buildHeaders } from '../helpers/AppHelper';
 
