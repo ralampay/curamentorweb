@@ -33,10 +33,10 @@ export default Sidebar = () => {
         </div>
       </a>
       <ul className="nav-links">
-        <li className={location.pathname == "/" ? "active" : ""}>
+        <li className={location.pathname == "/admin" ? "active" : ""}>
           <a
             onClick={() => {
-              navigate('/')
+              navigate('/admin')
             }}
           >
             <i>
@@ -50,7 +50,7 @@ export default Sidebar = () => {
         <li className={location.pathname == "/settings" ? "active" : ""}>
           <a
             onClick={() => {
-              navigate('/settings')
+              navigate('/admin/settings')
             }}
           >
             <i>
@@ -65,7 +65,7 @@ export default Sidebar = () => {
           <a
             onClick={() => {
               destroySession();
-              window.location.href="/";
+              navigate('/');
             }}
           >
             <i>

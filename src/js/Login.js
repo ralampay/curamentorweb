@@ -6,9 +6,11 @@ import {
   login,
   createSession
 } from "./services/AuthService";
+import { useNavigate } from "react-router-dom";
 
 export default Login = () => {
-  const [username, setUsername] = useState("");
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -16,13 +18,13 @@ export default Login = () => {
   const handleLogin = () => {
     setIsLoading(true);
 
-    login({ username, password}).then((payload) => {
+    login({ email, password}).then((payload) => {
       createSession({
         token: payload.data.token,
         user: payload.data.user
       });
 
-      window.location.href = "/";
+      navigate("/admin");
     }).catch((payload) => {
       console.log("Something went wrong");
       console.log(payload.response);
@@ -42,22 +44,22 @@ export default Login = () => {
           <div className="form-group p-2">
             <label>
               <FontAwesomeIcon icon={faUser} className="me-2"/>
-              Username:
+              Email:
             </label>
             <input
-              value={username}
+              value={email}
               disabled={isLoading}
-              className={`mt-2 ${getInputClassName(errors, 'username')}`}
+              className={`mt-2 ${getInputClassName(errors, 'email')}`}
               onKeyDown={(event) => {
                 if (event.key == 'Enter') {
                   handleLogin()
                 }
               }}
               onChange={(event) => {
-                setUsername(event.target.value);
+                setEmail(event.target.value);
               }}
             />
-            {renderInputErrors(errors, 'username')}
+            {renderInputErrors(errors, 'email')}
           </div>
           <div className="form-group p-2">
             <label>
