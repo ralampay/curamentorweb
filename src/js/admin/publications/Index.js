@@ -1,42 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../commons/Loader";
-import CoursesList from "./List";
-import { getCourses } from "../../services/CoursesService";
+import PublicationsList from "./List";
+import { getPublications } from "../../services/PublicationsService";
 
-export default CoursesIndex = () => {
+export default PublicationsIndex = () => {
   const navigate = useNavigate();
-  const [courses, setCourses] = useState([]);
+  const [publications, setPublications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getCourses().then((payload) => {
-      const source = payload.data?.records ?? payload.data;
-      setCourses(Array.isArray(source) ? source : []);
+    getPublications().then((payload) => {
+      const records = payload.data?.records ?? payload.data ?? [];
+      setPublications(Array.isArray(records) ? records : []);
     }).catch((payload) => {
-      console.error("Unable to load courses", payload?.response?.data);
+      console.error("Unable to load publications", payload?.response?.data);
     }).finally(() => {
       setIsLoading(false);
     });
   }, []);
 
   return (
-    <div className="courses-index">
+    <div className="publications-index">
       <div className="card border-0 shadow-sm mb-4">
         <div className="card-body d-flex justify-content-between align-items-center">
           <div>
             <p className="text-uppercase text-muted small fw-semibold mb-1">
-              Curriculum
+              Publications
             </p>
             <h2 className="h4 mb-0">
-              Courses
+              Research library
             </h2>
           </div>
           <button
             className="btn btn-primary"
-            onClick={() => navigate("/admin/courses/new")}
+            onClick={() => navigate("/admin/publications/new")}
           >
-            New course
+            New publication
           </button>
         </div>
       </div>
@@ -44,7 +44,7 @@ export default CoursesIndex = () => {
       {isLoading ? (
         <Loader/>
       ) : (
-        <CoursesList courses={courses} />
+        <PublicationsList publications={publications}/>
       )}
     </div>
   );

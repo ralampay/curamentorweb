@@ -8,7 +8,9 @@ import {
   faBook,
   faUserGraduate,
   faUsers,
-  faChalkboardTeacher
+  faChalkboardTeacher,
+  faFilePdf,
+  faFeather
 } from "@fortawesome/free-solid-svg-icons";
 import profile from "../styles/images/profile.png";
 import { destroySession } from "./services/AuthService";
@@ -48,6 +50,20 @@ export default Sidebar = () => {
             </i>
             <span className="link-name">
               Dashboard
+            </span>
+          </a>
+        </li>
+        <li className={location.pathname == "/blue-quill" ? "active" : ""}>
+          <a
+            onClick={() => {
+              navigate('/blue-quill')
+            }}
+          >
+            <i>
+              <FontAwesomeIcon icon={faFeather}/>
+            </i>
+            <span className="link-name">
+              Blue Quill
             </span>
           </a>
         </li>
@@ -107,6 +123,20 @@ export default Sidebar = () => {
             </span>
           </a>
         </li>
+        <li className={location.pathname.startsWith("/admin/publications") ? "active" : ""}>
+          <a
+            onClick={() => {
+              navigate('/admin/publications')
+            }}
+          >
+            <i>
+              <FontAwesomeIcon icon={faFilePdf}/>
+            </i>
+            <span className="link-name">
+              Publications
+            </span>
+          </a>
+        </li>
         <li className={location.pathname == "/settings" ? "active" : ""}>
           <a
             onClick={() => {
@@ -139,14 +169,14 @@ export default Sidebar = () => {
         <li>
           <div className="profile-details">
             <a href="#">
-              <div class="profile-content">
+              <div className="profile-content">
                 <img alt="profileImg" src={profile}/>
               </div>
-              <div class="name-job">
-                <div class="profile-name">
+              <div className="name-job">
+                <div className="profile-name">
                   username
                 </div>
-                <div class="job">
+                <div className="job">
                   JOB  
                 </div>
               </div>

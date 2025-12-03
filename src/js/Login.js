@@ -24,7 +24,8 @@ export default Login = () => {
         user: payload.data.user
       });
 
-      navigate("/admin");
+      //window.location.href = "/#/admin";
+      window.location.reload();
     }).catch((payload) => {
       console.log("Something went wrong");
       console.log(payload.response);

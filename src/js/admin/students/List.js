@@ -32,7 +32,21 @@ export default StudentsList = ({ students }) => {
                 <tr key={`student-${student.id}`} className="clickable" onClick={() => navigate(`/admin/students/${student.id}`)}>
                   <td>{`${student.first_name} ${student.middle_name || ""} ${student.last_name}`.trim()}</td>
                   <td>{student.id_number}</td>
-                  <td>{student.course?.name || student.course_name || student.course_id || "—"}</td>
+                  <td>
+                    {student.course?.code ? (
+                      <button
+                        className="btn btn-link btn-sm p-0"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          navigate(`/admin/courses/${student.course.id}`);
+                        }}
+                      >
+                        {student.course.code}
+                      </button>
+                    ) : (
+                      (student.course?.name || student.course_id || "—")
+                    )}
+                  </td>
                   <td className="text-end">
                     <button
                       className="btn btn-sm btn-outline-primary"

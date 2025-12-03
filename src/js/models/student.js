@@ -4,5 +4,6 @@ export const STUDENT = {
   middle_name: "",
   last_name: "",
   id_number: "",
+  email: "",
   course_id: ""
 }

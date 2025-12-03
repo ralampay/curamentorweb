@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUsers } from "../../services/UsersService";
-import { getBranches } from "../../services/BranchesService";
 import Loader from "../../commons/Loader";
 import List from "./List";
 import Pagination from "../../Pagination";
@@ -14,17 +13,14 @@ import {
 export default Index = () => {
   const navigate = useNavigate();
   const [users, setUsers]                         = useState([]);
-  const [branches, setBranches]                   = useState([]);
   const [totalPages, setTotalPages]               = useState(1);
   const [currentPage, setCurrentPage]             = useState(1);
   const [isLoading, setIsLoading]                 = useState(true);
-  const [isAdvancedFiltersVisible, setIsAdvancedFiltersVisible] = useState(false);
   const [isSearchPanelVisible, setIsSearchPanelVisible] = useState(false);
 
   const [args, setArgs] = useState({ page: 1 });
 
   const [filterByName, setFilterByName]           = useState("");
-  const [filterByBranchId, setFilterByBranchId]   = useState("");
 
   const sync = () => {
     getUsers(args).then((payload) => {
@@ -44,26 +40,12 @@ export default Index = () => {
     sync();
   }, [args]);
 
-  useEffect(() => {
-    getBranches().then((payload) => {
-      console.log("Successfully fetched branches");
-      setBranches(payload.data);
-    }).catch((payload) => {
-      console.log("Error in fetching branches");
-      console.log(payload.response.data);
-    });
-  }, []);
-
   const applyFilters = (page = 1) => {
     const params = { page };
     const trimmedName = filterByName.trim();
 
     if (trimmedName) {
       params.query = trimmedName;
-    }
-
-    if (filterByBranchId) {
-      params.branch_id = filterByBranchId;
     }
 
     setArgs(params);
@@ -77,8 +59,6 @@ export default Index = () => {
 
   const handleResetFilters = () => {
     setFilterByName("");
-    setFilterByBranchId("");
-    setIsAdvancedFiltersVisible(false);
     setIsLoading(true);
     setCurrentPage(1);
     setArgs({ page: 1 });
@@ -115,14 +95,11 @@ export default Index = () => {
               type="button"
               onClick={() => {
                 setIsSearchPanelVisible(!isSearchPanelVisible);
-                if (isSearchPanelVisible) {
-                  setIsAdvancedFiltersVisible(false);
-                }
               }}
               disabled={isLoading}
             >
               <FontAwesomeIcon icon={faMagnifyingGlass} className="me-2" />
-              {isSearchPanelVisible ? 'Hide search' : 'Search & filters'}
+              {isSearchPanelVisible ? 'Hide search' : 'Search'}
             </button>
             <button
               className="btn btn-primary"
@@ -146,23 +123,11 @@ export default Index = () => {
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-body">
             <div className="row g-3 align-items-end">
-              <div className="col-12 col-lg-7">
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                  <label className="form-label text-uppercase text-muted small fw-semibold mb-0">
-                    Search users
-                  </label>
-                  <button
-                    className="btn btn-link btn-sm text-decoration-none px-0"
-                    type="button"
-                    onClick={() => {
-                      setIsAdvancedFiltersVisible(!isAdvancedFiltersVisible);
-                    }}
-                    disabled={isLoading}
-                  >
-                    {isAdvancedFiltersVisible ? 'Hide advanced filters' : 'Advanced filters'}
-                  </button>
-                </div>
-                <div className="input-group input-group-lg">
+            <div className="col-12 col-lg-7">
+              <label className="form-label text-uppercase text-muted small fw-semibold mb-1">
+                Search users
+              </label>
+              <div className="input-group input-group-lg">
                   <span className="input-group-text bg-transparent">
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                   </span>
@@ -202,33 +167,6 @@ export default Index = () => {
               </div>
             </div>
 
-            {isAdvancedFiltersVisible &&
-              <div className="row g-3 mt-2">
-                <div className="col-12 col-md-6 col-lg-4">
-                  <label className="form-label text-uppercase text-muted small fw-semibold">
-                    Branch
-                  </label>
-                  <select 
-                    value={filterByBranchId} 
-                    className="form-select"
-                    disabled={isLoading}
-                    name="branch"
-                    onChange={(event) => {
-                      setFilterByBranchId(event.target.value);
-                    }}
-                  >
-                    <option value="">All branches</option>
-                    {branches.map((branch) => {
-                      return (
-                        <option value={branch.id} key={`branch-${branch.id}`}>
-                          {branch.name}
-                        </option>
-                      )
-                    })}
-                  </select>
-                </div>
-              </div>
-            }
           </div>
         </div>
       }

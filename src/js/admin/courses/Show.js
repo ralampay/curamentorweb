@@ -3,13 +3,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faEdit } from "@fortawesome/free-solid-svg-icons";
 import Loader from "../../commons/Loader";
-import { getCourse } from "../../services/CoursesService";
+import { getCourse, getCourseStudents } from "../../services/CoursesService";
 
 export default CoursesShow = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [course, setCourse] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [students, setStudents] = useState([]);
+  const [isStudentsLoading, setIsStudentsLoading] = useState(true);
 
   useEffect(() => {
     if (!id) {
@@ -25,6 +27,22 @@ export default CoursesShow = () => {
       setIsLoading(false);
     });
   }, [id, navigate]);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    setIsStudentsLoading(true);
+    getCourseStudents(id).then((payload) => {
+      const source = payload.data?.records ?? payload.data;
+      setStudents(Array.isArray(source) ? source : []);
+    }).catch((payload) => {
+      console.error("Unable to load course students", payload?.response?.data);
+    }).finally(() => {
+      setIsStudentsLoading(false);
+    });
+  }, [id]);
 
   if (isLoading) {
     return <Loader/>;
@@ -73,7 +91,7 @@ export default CoursesShow = () => {
           </div>
         </div>
 
-        <div className="row g-3">
+        <div className="row g-3 mb-4">
           <div className="col-12 col-md-6">
             <h6 className="text-uppercase text-muted small mb-1">
               Name
@@ -90,6 +108,52 @@ export default CoursesShow = () => {
               {course.code || "—"}
             </p>
           </div>
+        </div>
+
+        <hr/>
+
+        <div className="mt-4">
+          <div className="d-flex align-items-center justify-content-between mb-3">
+            <h5 className="h6 mb-0 text-uppercase text-muted">
+              Students under this course
+            </h5>
+            <span className="badge text-bg-secondary">
+              {isStudentsLoading ? "Loading…" : `${students.length} records`}
+            </span>
+          </div>
+          {isStudentsLoading ? (
+            <Loader/>
+          ) : students.length === 0 ? (
+            <p className="text-muted">No students enrolled yet.</p>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-sm align-middle mb-0">
+                <thead className="table-light text-muted small text-uppercase">
+                  <tr>
+                    <th>Name</th>
+                    <th>ID number</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.map((student) => (
+                    <tr
+                      key={`student-${student.id}`}
+                      className="clickable"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(`/admin/students/${student.id}`)}
+                    >
+                      <td>
+                        {`${student.first_name} ${student.middle_name || ""} ${student.last_name}`.trim()}
+                      </td>
+                      <td>{student.id_number || "—"}</td>
+                      <td>{student.email || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>

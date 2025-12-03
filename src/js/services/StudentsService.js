@@ -40,12 +40,13 @@ export const getStudent = (id) => {
   )
 }
 
-export const getStudents = (params) => {
+export const getStudents = (params = {}, config = {}) => {
   return axios.get(
     `${API_BASE_URL}/students`,
     {
-      params: params,
-      headers: buildHeaders()
+      params,
+      headers: buildHeaders(),
+      ...config
     }
   )
 }

@@ -48,3 +48,12 @@ export const getCourses = (params) => {
     }
   );
 }
+
+export const getCourseStudents = (id) => {
+  return axios.get(
+    `${API_BASE_URL}/courses/${id}/students`,
+    {
+      headers: buildHeaders()
+    }
+  );
+}

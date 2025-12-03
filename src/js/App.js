@@ -22,6 +22,9 @@ import FacultiesShow from "./admin/faculties/Show";
 import StudentsIndex from "./admin/students/Index";
 import StudentsForm from "./admin/students/Form";
 import StudentsShow from "./admin/students/Show";
+import PublicationsIndex from "./admin/publications/Index";
+import PublicationsForm from "./admin/publications/Form";
+import PublicationsShow from "./admin/publications/Show";
 
 const AdminArea = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -113,6 +116,24 @@ const AdminArea = () => {
               <Route
                 path=":id"
                 element={<StudentsShow/>}
+              />
+            </Route>
+            <Route path="publications">
+              <Route
+                index
+                element={<PublicationsIndex/>}
+              />
+              <Route
+                path="new"
+                element={<PublicationsForm/>}
+              />
+              <Route
+                path=":id/edit"
+                element={<PublicationsForm/>}
+              />
+              <Route
+                path=":id"
+                element={<PublicationsShow/>}
               />
             </Route>
           </Routes>

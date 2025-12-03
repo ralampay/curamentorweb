@@ -39,12 +39,13 @@ export const getFaculty = (id) => {
   );
 }
 
-export const getFaculties = (params) => {
+export const getFaculties = (params = {}, config = {}) => {
   return axios.get(
     `${API_BASE_URL}/faculties`,
     {
       params,
-      headers: buildHeaders()
+      headers: buildHeaders(),
+      ...config
     }
   );
 }

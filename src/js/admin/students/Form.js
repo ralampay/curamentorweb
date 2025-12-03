@@ -23,7 +23,8 @@ export default StudentsForm = () => {
 
   useEffect(() => {
     getCourses().then((payload) => {
-      setCourses(payload.data || []);
+      const source = payload.data?.records ?? payload.data;
+      setCourses(Array.isArray(source) ? source : []);
     }).catch((payload) => {
       console.error("Unable to load courses", payload?.response?.data);
     });
@@ -45,6 +46,7 @@ export default StudentsForm = () => {
         middle_name: student.middle_name || "",
         last_name: student.last_name || "",
         id_number: student.id_number || "",
+        email: student.email || "",
         course_id: student.course_id || student.course?.id || ""
       });
     }).catch((payload) => {
@@ -152,6 +154,19 @@ export default StudentsForm = () => {
               disabled={isSaving}
             />
             {renderInputErrors(errors, "id_number")}
+          </div>
+          <div className="col-12 col-md-6">
+            <label className="form-label">
+              Email
+            </label>
+            <input
+              type="email"
+              className={getInputClassName(errors, "email")}
+              value={form.email}
+              onChange={(event) => handleChange("email", event.target.value)}
+              disabled={isSaving}
+            />
+            {renderInputErrors(errors, "email")}
           </div>
           <div className="col-12 col-md-6">
             <label className="form-label">
