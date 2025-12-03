@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { chat } from "./services/BlueQuillService";
 
 const DEFAULT_MESSAGES = [
   {
@@ -10,6 +11,32 @@ const DEFAULT_MESSAGES = [
 export default BlueQuill = () => {
   const [messages, setMessages] = useState(DEFAULT_MESSAGES);
   const [draft, setDraft] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const escapeHtml = (value) => {
+    return value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  };
+
+  const renderMarkdown = (value) => {
+    if (!value) {
+      return "";
+    }
+
+    let html = escapeHtml(value);
+    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
+    html = html.replace(/__([^\n]+?)__/g, "<strong>$1</strong>");
+    html = html.replace(/_(.+?)_/g, "<em>$1</em>");
+    html = html.replace(/^### (.*)$/gm, "<h4>$1</h4>");
+    html = html.replace(/^## (.*)$/gm, "<h3>$1</h3>");
+    html = html.replace(/^# (.*)$/gm, "<h2>$1</h2>");
+    html = html.replace(/^\- (.*)$/gm, "<li>$1</li>");
+    html = html.replace(/\n/g, "<br/>");
+    return html;
+  };
 
   const handleSend = () => {
     if (!draft.trim()) {
@@ -17,26 +44,45 @@ export default BlueQuill = () => {
     }
 
     const userMessage = { role: "user", content: draft.trim() };
-    const assistantReply = {
-      role: "assistant",
-      content: "I don't have live data, but I can mock a response: the requested publication is listed in the library and its PDF is ready to download."
-    };
-
-    setMessages((prev) => [...prev, userMessage, assistantReply]);
+    setMessages((prev) => [...prev, userMessage]);
     setDraft("");
+    setIsProcessing(true);
+
+    chat(draft.trim()).then((response) => {
+      console.log(response);
+      const answer = response.data?.answer || "I received your question and pushed it to the knowledge core.";
+      const assistantReply = {
+        role: "assistant",
+        content: answer
+      };
+
+      setMessages((prev) => [...prev, assistantReply]);
+    }).catch((error) => {
+      console.error("BlueQuill chat error", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Something went wrong while fetching the response."
+        }
+      ]);
+    }).finally(() => {
+      setIsProcessing(false);
+    });
   };
 
   return (
     <div
       className="vh-100 d-flex align-items-center justify-content-center"
-      style={{ background: "linear-gradient(180deg, #e2e8ff, #e0f2fe 50%, #bfdbfe)" }}
+      style={{ background: "linear-gradient(180deg, #e0f2fe, #dbeafe 40%, #c7d2fe)" }}
     >
       <div
-        className="bluequill-card shadow-lg rounded-4 p-4"
+        className="bluequill-card shadow-lg rounded-4 p-4 d-flex flex-column"
         style={{
-          width: "min(700px, 90vw)",
+          width: "min(960px, 98vw)",
+          height: "90vh",
           backgroundColor: "white",
-          border: "1px solid rgba(15, 118, 255, 0.15)"
+          border: "1px solid rgba(15, 118, 255, 0.2)"
         }}
       >
         <div className="d-flex align-items-center justify-content-between mb-3">
@@ -48,11 +94,10 @@ export default BlueQuill = () => {
         </div>
 
         <div
-          className="border rounded-3 p-3 mb-3"
+          className="border rounded-3 p-3 mb-3 flex-grow-1 overflow-auto"
           style={{
-            minHeight: "320px",
-            backgroundColor: "#e0f2fe",
-            borderColor: "rgba(15, 118, 255, 0.3)"
+            backgroundColor: "#f8fafc",
+            borderColor: "rgba(15, 118, 255, 0.2)"
           }}
         >
           {messages.map((message, index) => (
@@ -71,9 +116,11 @@ export default BlueQuill = () => {
                   {message.role === "assistant" ? "Assistant" : "User"}
                 </small>
               </div>
-              <p className="mb-0" style={{ lineHeight: 1.6, color: "#0f172a" }}>
-                {message.content}
-              </p>
+              <div
+                className="mb-0"
+                style={{ lineHeight: 1.6, color: "#0f172a" }}
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
+              />
             </div>
           ))}
         </div>
@@ -91,7 +138,7 @@ export default BlueQuill = () => {
               }
             }}
           />
-          <button className="btn btn-primary" onClick={handleSend} disabled={!draft.trim()}>
+          <button className="btn btn-primary" onClick={handleSend} disabled={!draft.trim() || isProcessing}>
             Send
           </button>
         </div>
