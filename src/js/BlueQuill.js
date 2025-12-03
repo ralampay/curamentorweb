@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import Loader from "./commons/Loader";
 import { chat } from "./services/BlueQuillService";
 
 const DEFAULT_MESSAGES = [
   {
     role: "assistant",
-    content: "Ask me about any publication in the system and I will summarize the details, date, or file status."
+    content: "Ask me about any publication in the system and I will summarize the details, date, or file status.",
+    timestamp: new Date().toISOString()
   }
 ];
 
@@ -43,7 +45,7 @@ export default BlueQuill = () => {
       return;
     }
 
-    const userMessage = { role: "user", content: draft.trim() };
+    const userMessage = { role: "user", content: draft.trim(), timestamp: new Date().toISOString() };
     setMessages((prev) => [...prev, userMessage]);
     setDraft("");
     setIsProcessing(true);
@@ -53,7 +55,10 @@ export default BlueQuill = () => {
       const answer = response.data?.answer || "I received your question and pushed it to the knowledge core.";
       const assistantReply = {
         role: "assistant",
-        content: answer
+        content: answer,
+        timestamp: new Date().toISOString(),
+        files: response.data?.files || [],
+        authors: response.data?.authors || []
       };
 
       setMessages((prev) => [...prev, assistantReply]);
@@ -63,7 +68,8 @@ export default BlueQuill = () => {
         ...prev,
         {
           role: "assistant",
-          content: "Something went wrong while fetching the response."
+          content: "Something went wrong while fetching the response.",
+          timestamp: new Date().toISOString()
         }
       ]);
     }).finally(() => {
@@ -88,18 +94,25 @@ export default BlueQuill = () => {
         <div className="d-flex align-items-center justify-content-between mb-3">
           <div>
             <p className="text-uppercase text-muted small mb-1">Blue Quill</p>
-            <h1 className="h3 mb-0">Publication page assistant</h1>
+            <h1 className="h3 mb-0">Blue Quill</h1>
           </div>
-          <span className="badge text-bg-primary">Ad-hoc</span>
+          <span className="badge bg-primary text-white">
+            Blue Quill
+          </span>
         </div>
 
         <div
-          className="border rounded-3 p-3 mb-3 flex-grow-1 overflow-auto"
+          className="border rounded-3 p-3 mb-3 flex-grow-1 overflow-auto position-relative"
           style={{
             backgroundColor: "#f8fafc",
             borderColor: "rgba(15, 118, 255, 0.2)"
           }}
         >
+          {isProcessing &&
+            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75 rounded-3">
+              <Loader/>
+            </div>
+          }
           {messages.map((message, index) => (
             <div
               key={`${message.role}-${index}`}
@@ -109,18 +122,53 @@ export default BlueQuill = () => {
               }}
             >
               <div className="d-flex align-items-center gap-2 mb-1">
-                <span className={`badge ${message.role === "assistant" ? "bg-primary" : "bg-light"} text-dark`}>
+                <strong className={`${message.role === "assistant" ? "text-primary" : "text-muted"}`}>
                   {message.role === "assistant" ? "Blue Quill" : "You"}
-                </span>
+                </strong>
                 <small className="text-muted">
                   {message.role === "assistant" ? "Assistant" : "User"}
                 </small>
               </div>
-              <div
-                className="mb-0"
-                style={{ lineHeight: 1.6, color: "#0f172a" }}
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
-              />
+              <div className="d-flex align-items-start justify-content-between mb-1">
+                <div
+                  className="mb-0 flex-grow-1"
+                  style={{ lineHeight: 1.6, color: "#0f172a" }}
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
+                />
+                {message.timestamp &&
+                  <small className="text-muted ms-3" style={{ fontSize: "0.75rem" }}>
+                    {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </small>
+                }
+              </div>
+              {message.authors && message.authors.length > 0 &&
+                <div className="text-muted small mb-1">
+                  Authors: {message.authors.join(", ")}
+                </div>
+              }
+              {message.files && message.files.length > 0 && (() => {
+                const uniqueFiles = Array.isArray(message.files)
+                  ? [...new Set(message.files)]
+                  : [];
+                if (!uniqueFiles.length) {
+                  return null;
+                }
+                return (
+                  <div className="d-flex flex-wrap gap-2">
+                    {uniqueFiles.map((fileUrl) => (
+                      <a
+                        key={fileUrl}
+                        className="btn btn-sm btn-outline-primary"
+                        href={fileUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Download file
+                      </a>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           ))}
         </div>
@@ -140,6 +188,15 @@ export default BlueQuill = () => {
           />
           <button className="btn btn-primary" onClick={handleSend} disabled={!draft.trim() || isProcessing}>
             Send
+          </button>
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => {
+              setMessages(DEFAULT_MESSAGES);
+              setDraft("");
+            }}
+          >
+            Reset
           </button>
         </div>
       </div>
