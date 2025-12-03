@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Loader from "../../commons/Loader";
 import PublicationsList from "./List";
 import { getPublications } from "../../services/PublicationsService";
@@ -33,9 +35,10 @@ export default PublicationsIndex = () => {
             </h2>
           </div>
           <button
-            className="btn btn-primary"
+            className="btn btn-primary d-flex align-items-center gap-2"
             onClick={() => navigate("/admin/publications/new")}
           >
+            <FontAwesomeIcon icon={faPlus}/>
             New publication
           </button>
         </div>

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faFilePdf, faBrain } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faFilePdf, faBrain, faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import Loader from "../../commons/Loader";
 import { getPublication, deletePublication, vectorize } from "../../services/PublicationsService";
 import { getFaculties } from "../../services/FacultiesService";
@@ -207,9 +207,10 @@ export default PublicationsShow = () => {
           </div>
         <div className="d-flex gap-2 flex-wrap">
           <button
-            className="btn btn-outline-primary"
+            className="btn btn-outline-primary d-flex align-items-center gap-2"
             onClick={() => setIsAddModalOpen(true)}
           >
+            <FontAwesomeIcon icon={faUserPlus}/>
             Add author
           </button>
           <button
@@ -220,9 +221,10 @@ export default PublicationsShow = () => {
             Vectorize
           </button>
           <button
-            className="btn btn-outline-danger"
+            className="btn btn-outline-danger d-flex align-items-center gap-2"
             onClick={() => setIsDeleteModalOpen(true)}
           >
+            <FontAwesomeIcon icon={faTrash}/>
             Delete
           </button>
           <button
@@ -261,13 +263,14 @@ export default PublicationsShow = () => {
                       <td>{author.person_id_number || "—"}</td>
                       <td className="text-end">
                         <button
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
                           onClick={() => {
                             setAuthorToRemove(author);
                             setIsDeleteAuthorModalOpen(true);
                           }}
                         >
-                          Delete
+                          <FontAwesomeIcon icon={faTrash}/>
+                          Remove
                         </button>
                       </td>
                     </tr>
