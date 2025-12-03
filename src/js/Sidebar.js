@@ -4,7 +4,11 @@ import {
   faDashboard, 
   faArrowLeft,
   faGears,
-  faBars
+  faBars,
+  faBook,
+  faUserGraduate,
+  faUsers,
+  faChalkboardTeacher
 } from "@fortawesome/free-solid-svg-icons";
 import profile from "../styles/images/profile.png";
 import { destroySession } from "./services/AuthService";
@@ -44,6 +48,62 @@ export default Sidebar = () => {
             </i>
             <span className="link-name">
               Dashboard
+            </span>
+          </a>
+        </li>
+        <li className={location.pathname.startsWith("/admin/users") ? "active" : ""}>
+          <a
+            onClick={() => {
+              navigate('/admin/users')
+            }}
+          >
+            <i>
+              <FontAwesomeIcon icon={faUsers}/>
+            </i>
+            <span className="link-name">
+              Users
+            </span>
+          </a>
+        </li>
+        <li className={location.pathname.startsWith("/admin/courses") ? "active" : ""}>
+          <a
+            onClick={() => {
+              navigate('/admin/courses')
+            }}
+          >
+            <i>
+              <FontAwesomeIcon icon={faBook}/>
+            </i>
+            <span className="link-name">
+              Courses
+            </span>
+          </a>
+        </li>
+        <li className={location.pathname.startsWith("/admin/students") ? "active" : ""}>
+          <a
+            onClick={() => {
+              navigate('/admin/students')
+            }}
+          >
+            <i>
+              <FontAwesomeIcon icon={faUserGraduate}/>
+            </i>
+            <span className="link-name">
+              Students
+            </span>
+          </a>
+        </li>
+        <li className={location.pathname.startsWith("/admin/faculties") ? "active" : ""}>
+          <a
+            onClick={() => {
+              navigate('/admin/faculties')
+            }}
+          >
+            <i>
+              <FontAwesomeIcon icon={faChalkboardTeacher}/>
+            </i>
+            <span className="link-name">
+              Faculties
             </span>
           </a>
         </li>

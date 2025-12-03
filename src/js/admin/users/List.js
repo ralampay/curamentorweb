@@ -43,7 +43,7 @@ export default List = ({ users }) => {
                     className="clickable"
                     style={{ cursor: "pointer" }}
                     onClick={() => {
-                      navigate(`/admin/users/${user.id}/edit`);
+                      navigate(`/admin/users/${user.id}`);
                     }}
                   >
                     <td>
